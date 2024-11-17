@@ -1,4 +1,4 @@
-package com.sps.todoitems.ui.theme
+package com.sps.todoitems.core.theme
 
 import androidx.compose.ui.graphics.Color
 
