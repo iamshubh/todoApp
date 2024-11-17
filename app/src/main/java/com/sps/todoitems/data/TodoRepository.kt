@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface TodoRepository {
     suspend fun getItems(): Flow<List<TodoApiModel>>
     suspend fun addItem(item: TodoApiModel)
-    suspend fun delete(id: Int)
+    suspend fun delete(id: Long)
 }

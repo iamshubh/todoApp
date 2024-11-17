@@ -21,6 +21,7 @@ class SharedViewmodel @Inject constructor(
     fun initialize() {
         viewModelScope.launch {
             repository.getItems().collect {
+                println("items updated $it")
                 _items.value = it
             }
         }
@@ -37,7 +38,7 @@ class SharedViewmodel @Inject constructor(
         }
     }
 
-    suspend fun onDeleteItem(itemId: Int) {
+    suspend fun onDeleteItem(itemId: Long) {
         viewModelScope.launch {
             repository.delete(itemId)
         }
