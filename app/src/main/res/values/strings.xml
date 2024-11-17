@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TodoItems</string>
+
+    <string name="title_todo_items">Todo Items</string>"
+    <string name="add_todo">Add TODO</string>
+    <string name="no_items_text">Press the + button to add a TODOitem.</string>
 </resources>
