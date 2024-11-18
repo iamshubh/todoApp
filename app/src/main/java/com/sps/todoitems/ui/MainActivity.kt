@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -41,7 +42,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        viewModel.initialize()
     }
+
 }
 
 @Composable
@@ -50,6 +53,8 @@ fun RootScreen(
     viewModel: SharedViewmodel,
     navController: NavHostController = rememberNavController(),
 ) {
+    val todoItems = viewModel.items.collectAsState()
+    val loader = viewModel.loading.collectAsState()
     NavHost(
         modifier = modifier.background(color = PurpleGrey80.copy(alpha = 0.2f)),
         navController = navController,
@@ -57,7 +62,7 @@ fun RootScreen(
     ) {
         composable<Routes.Main> {
             TodoHomeScreen(
-                viewModel = viewModel,
+                todoItems = todoItems.value,
                 onAddItemClick = {
                     navController.navigate(Routes.Details)
                 }
@@ -65,6 +70,7 @@ fun RootScreen(
         }
         composable<Routes.Details> {
             TodoAddItemScreen(
+                loading = loader.value,
                 modifier = Modifier,
                 onAddItem = viewModel::onAddItem
             )

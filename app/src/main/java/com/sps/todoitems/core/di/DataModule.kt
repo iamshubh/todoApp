@@ -2,7 +2,10 @@ package com.sps.todoitems.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.sps.todoitems.data.TodoRepositoryImpl
 import com.sps.todoitems.data.db.TodoDatabase
+import com.sps.todoitems.data.db.TodoEntityDao
+import com.sps.todoitems.domain.TodoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object DataModule {
 
     @Provides
     @Singleton
@@ -21,6 +24,12 @@ object DatabaseModule {
         TodoDatabase::class.java,
         TodoDatabase.databaseName,
     ).build()
+
+    @Provides
+    @Singleton
+    fun provideTodoRepository(db: TodoDatabase): TodoRepository {
+        return TodoRepositoryImpl(db.todoDao())
+    }
 
     @Provides
     fun provideUserDao(database: TodoDatabase) = database.todoDao()

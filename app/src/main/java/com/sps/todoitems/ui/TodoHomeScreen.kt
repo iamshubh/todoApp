@@ -33,17 +33,16 @@ import com.sps.todoitems.data.TodoApiModel
 
 @Composable
 fun TodoHomeScreen(
-    viewModel: SharedViewmodel,
+    todoItems: List<TodoApiModel>,
     onAddItemClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val items = viewModel.items.collectAsState()
     Box(
         modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        TodoItemsContainer(items.value)
+        TodoItemsContainer(todoItems = todoItems)
         AddTodoItemButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)

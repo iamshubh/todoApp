@@ -1,15 +1,14 @@
 package com.sps.todoitems.ui
 
-import android.R.string
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +26,25 @@ import com.sps.todoitems.core.theme.TodoTypography
 
 @Composable
 fun TodoAddItemScreen(
+    onAddItem: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onAddItem: (String) -> Unit
+    loading: Boolean = false,
+) {
+    Box {
+        TodoItemsContent(
+            modifier = modifier,
+            onAddItem = onAddItem
+        )
+        if (loading) {
+            CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+fun TodoItemsContent(
+    modifier: Modifier = Modifier,
+    onAddItem: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -44,7 +60,7 @@ fun TodoAddItemScreen(
                 text = it
             },
             label = {
-                Text("add Todo Item")
+                Text(text = stringResource(R.string.add_todo))
             },
             singleLine = true,
         )

@@ -4,10 +4,9 @@ import kotlinx.serialization.Serializable
 
 interface Routes {
 
-    @kotlinx.serialization.Serializable
+    @Serializable
     object Main: Routes
 
     @Serializable
     object Details: Routes
-
 }

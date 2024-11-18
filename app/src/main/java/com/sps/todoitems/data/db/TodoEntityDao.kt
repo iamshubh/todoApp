@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoEntityDao {
 
-  @Query("SELECT * FROM todo_items")
-  suspend fun getAll(): Flow<List<TodoEntity>>
+    @Query("SELECT * FROM todos")
+    fun getAll(): Flow<List<TodoEntity>>
 
-  @Query("SELECT * FROM todo_items where id = :id")
-  suspend fun getById(id: Int)
+    @Query("SELECT * FROM todos where id = :id")
+    suspend fun getById(id: Int): TodoEntity
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertItem(todoItem: TodoEntity): Long
+    @Insert
+    suspend fun insertItem(todoItem: TodoEntity): Long
 
-  @Delete
-  suspend fun deleteItem(todoItem: TodoEntity): Long
+    @Delete
+    suspend fun deleteItem(todoItem: TodoEntity): Int
 }

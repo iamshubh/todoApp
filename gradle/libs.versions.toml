@@ -39,8 +39,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 android-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "androidHilt" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
-
-
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCommon"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
