@@ -11,4 +11,5 @@ sealed interface UiAction {
 
     data class ItemAddition(val text: String) : UiAction
     data class ItemDeletion(val id: Long): UiAction
+    data class ItemSearch(val text: String) : UiAction
 }

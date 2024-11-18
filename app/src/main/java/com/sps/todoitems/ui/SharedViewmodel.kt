@@ -6,9 +6,12 @@ import com.sps.todoitems.data.TodoApiModel
 import com.sps.todoitems.domain.TodoRepository
 import com.sps.todoitems.ui.UiAction.None
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,18 +20,39 @@ class SharedViewmodel @Inject constructor(
     private val repository: TodoRepository,
 ) : ViewModel() {
 
-    private var _items: MutableStateFlow<List<TodoApiModel>> = MutableStateFlow(emptyList())
-    val items = _items.asStateFlow()
+    private var _insertedItems: MutableStateFlow<List<TodoApiModel>> = MutableStateFlow(emptyList())
+    val insertedItems = _insertedItems.asStateFlow()
+
+    private var _filteredItems: MutableStateFlow<List<TodoApiModel>> = MutableStateFlow(emptyList())
+    val filteredItems = _filteredItems.asStateFlow()
 
     private var _actionData: MutableStateFlow<UiAction> = MutableStateFlow(None)
     val actionData = _actionData.asStateFlow()
 
+    private var _searchTextFlow: MutableStateFlow<String> = MutableStateFlow("")
+
+    private var savedTodoItems: List<TodoApiModel> = emptyList()
+
+    @OptIn(FlowPreview::class)
     fun initialize() {
         viewModelScope.launch {
             repository.getItems().collect {
                 println("items updated $it")
-                _items.value = it
+                savedTodoItems = it
+                _insertedItems.value = savedTodoItems
             }
+        }
+
+        viewModelScope.launch {
+            _searchTextFlow
+                .debounce(2000)
+                .distinctUntilChanged().collect { query ->
+                    if (query.isEmpty()) {
+                        _filteredItems.value = savedTodoItems
+                    } else {
+                        _filteredItems.value = savedTodoItems.filter { it.text.contains(query) }
+                    }
+                }
         }
     }
 
@@ -40,6 +64,10 @@ class SharedViewmodel @Inject constructor(
 
             is UiAction.ItemDeletion -> {
                 onDeleteItem(uiAction.id)
+            }
+
+            is UiAction.ItemSearch -> {
+                _searchTextFlow.tryEmit(uiAction.text)
             }
 
             is None -> {

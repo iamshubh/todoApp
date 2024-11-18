@@ -50,7 +50,8 @@ fun RootScreen(
     viewModel: SharedViewmodel,
     navController: NavHostController = rememberNavController(),
 ) {
-    val todoItems by viewModel.items.collectAsState()
+    val savedTodoItems by viewModel.insertedItems.collectAsState()
+    val filteredTodoItems by viewModel.filteredItems.collectAsState()
     val uiActionUpdates by viewModel.actionData.collectAsState()
     NavHost(
         modifier = modifier.background(color = PurpleGrey80.copy(alpha = 0.2f)),
@@ -60,7 +61,8 @@ fun RootScreen(
         composable<Routes.Main> {
             TodoHomeScreen(
                 modifier = modifier,
-                todoItems = todoItems,
+                savedAllItems = savedTodoItems,
+                filteredTodoItems = filteredTodoItems,
                 actionHandler = viewModel::onHandleAction,
                 onAddItemButtonClick = {
                     navController.navigate(Routes.Details)

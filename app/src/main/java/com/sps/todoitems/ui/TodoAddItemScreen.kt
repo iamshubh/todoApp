@@ -62,7 +62,7 @@ fun TodoAddItemScreen(
                     )
                 }
                 LaunchedEffect(Unit) {
-                    delay(2500)
+                    delay(500)
                     actionHandler.invoke(UiAction.None)
                     onBackClick.invoke()
                 }
@@ -81,7 +81,7 @@ fun TodoAddItemScreen(
                     )
                 }
                 LaunchedEffect(Unit) {
-                    delay(2500)
+                    delay(2000)
                     actionHandler.invoke(UiAction.None)
                 }
             }

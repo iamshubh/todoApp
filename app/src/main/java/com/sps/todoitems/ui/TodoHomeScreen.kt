@@ -16,8 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +42,8 @@ import com.sps.todoitems.data.TodoApiModel
 
 @Composable
 fun TodoHomeScreen(
-    todoItems: List<TodoApiModel>,
+    savedAllItems: List<TodoApiModel>,
+    filteredTodoItems: List<TodoApiModel>,
     onAddItemButtonClick: () -> Unit,
     actionHandler: (UiAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -47,7 +53,11 @@ fun TodoHomeScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        TodoItemsContainer(todoItems = todoItems, actionHandler = actionHandler)
+        TodoItemsContainer(
+            filteredTodoItems = filteredTodoItems,
+            savedAllItems = savedAllItems,
+            actionHandler = actionHandler
+        )
         AddTodoItemButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -78,7 +88,8 @@ fun AddTodoItemButton(modifier: Modifier = Modifier, onAddItemButtonClick: () ->
 
 @Composable
 fun TodoItemsContainer(
-    todoItems: List<TodoApiModel>,
+    savedAllItems: List<TodoApiModel>,
+    filteredTodoItems: List<TodoApiModel>,
     actionHandler: (UiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,13 +106,29 @@ fun TodoItemsContainer(
                 textAlign = TextAlign.Center,
             )
         )
-        if (todoItems.isEmpty()) {
+        if (savedAllItems.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_items_text),
                 style = TodoTypography.bodyLarge
             )
         } else {
-            TodoContent(todoItems = todoItems, actionHandler = actionHandler)
+            var searchText by remember { mutableStateOf("") }
+            OutlinedTextField(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                maxLines = 1,
+                label = { Text(text = stringResource(R.string.search_todos)) },
+                value = searchText,
+                onValueChange = {
+                    searchText = it
+                    actionHandler.invoke(UiAction.ItemSearch(it))
+                }
+            )
+            TodoContent(
+                todoItems = filteredTodoItems,
+                actionHandler = actionHandler
+            )
         }
     }
 }
@@ -115,7 +142,7 @@ fun TodoContent(
     LazyColumn(
         modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(todoItems.size) {
@@ -159,6 +186,11 @@ fun TodoContent(
 fun Previews(modifier: Modifier = Modifier) {
     Column {
         TodoItemsContainer((1..9).map {
+            TodoApiModel(
+                text = "item $it",
+                timeStamp = System.currentTimeMillis()
+            )
+        }, (1..9).map {
             TodoApiModel(
                 text = "item $it",
                 timeStamp = System.currentTimeMillis()
