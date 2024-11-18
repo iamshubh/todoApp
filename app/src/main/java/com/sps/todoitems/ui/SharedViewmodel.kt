@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sps.todoitems.data.TodoApiModel
 import com.sps.todoitems.domain.TodoRepository
+import com.sps.todoitems.ui.UiAction.None
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +20,8 @@ class SharedViewmodel @Inject constructor(
     private var _items: MutableStateFlow<List<TodoApiModel>> = MutableStateFlow(emptyList())
     val items = _items.asStateFlow()
 
-    private var _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val loading = _loading.asStateFlow()
+    private var _actionData: MutableStateFlow<UiAction> = MutableStateFlow(None)
+    val actionData = _actionData.asStateFlow()
 
     fun initialize() {
         viewModelScope.launch {
@@ -31,9 +32,31 @@ class SharedViewmodel @Inject constructor(
         }
     }
 
+    fun onHandleAction(uiAction: UiAction) {
+        when (uiAction) {
+            is UiAction.ItemAddition -> {
+                onAddItem(uiAction.text)
+            }
+
+            is UiAction.ItemDeletion -> {
+                onDeleteItem(uiAction.id)
+            }
+
+            is None -> {
+                _actionData.value = None
+            }
+
+            else -> {}
+        }
+    }
+
     fun onAddItem(text: String) {
         viewModelScope.launch {
-            _loading.value = true
+            if (isValidItem(text).not()) {
+                _actionData.value = UiAction.FailureAddition
+                return@launch
+            }
+            _actionData.value = UiAction.Loading
             val itemId = repository.addItem(
                 TodoApiModel(
                     text = text,
@@ -42,13 +65,17 @@ class SharedViewmodel @Inject constructor(
             )
             delay(2500)
             println("item added $itemId")
-            _loading.value = false
+            _actionData.value = UiAction.SuccessAddition
         }
     }
 
-    suspend fun onDeleteItem(itemId: Long) {
+    fun onDeleteItem(itemId: Long) {
         viewModelScope.launch {
             repository.delete(itemId)
         }
+    }
+
+    private fun isValidItem(text: String): Boolean {
+        return text.trim() != "Error"
     }
 }

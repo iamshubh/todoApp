@@ -4,4 +4,6 @@
     <string name="title_todo_items">Todo Items</string>"
     <string name="add_todo">Add TODO</string>
     <string name="no_items_text">Press the + button to add a TODOitem.</string>
+    <string name="added_successfully">Items has been added successfully</string>
+    <string name="failure_todo">Failed to add TODO</string>
 </resources>

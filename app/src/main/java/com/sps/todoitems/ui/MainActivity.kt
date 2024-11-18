@@ -6,15 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,7 +42,6 @@ class MainActivity : ComponentActivity() {
         }
         viewModel.initialize()
     }
-
 }
 
 @Composable
@@ -53,8 +50,8 @@ fun RootScreen(
     viewModel: SharedViewmodel,
     navController: NavHostController = rememberNavController(),
 ) {
-    val todoItems = viewModel.items.collectAsState()
-    val loader = viewModel.loading.collectAsState()
+    val todoItems by viewModel.items.collectAsState()
+    val uiActionUpdates by viewModel.actionData.collectAsState()
     NavHost(
         modifier = modifier.background(color = PurpleGrey80.copy(alpha = 0.2f)),
         navController = navController,
@@ -62,17 +59,20 @@ fun RootScreen(
     ) {
         composable<Routes.Main> {
             TodoHomeScreen(
-                todoItems = todoItems.value,
-                onAddItemClick = {
+                modifier = modifier,
+                todoItems = todoItems,
+                actionHandler = viewModel::onHandleAction,
+                onAddItemButtonClick = {
                     navController.navigate(Routes.Details)
                 }
             )
         }
         composable<Routes.Details> {
             TodoAddItemScreen(
-                loading = loader.value,
+                action = uiActionUpdates,
                 modifier = Modifier,
-                onAddItem = viewModel::onAddItem
+                onBackClick = { navController.popBackStack() },
+                actionHandler = viewModel::onHandleAction,
             )
         }
     }
