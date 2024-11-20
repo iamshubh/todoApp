@@ -35,7 +35,6 @@ class TodoRepositoryImpl @Inject constructor(
             )
         }
 
-
     override suspend fun delete(id: Long) =
         withContext(Dispatchers.IO) {
             dao.deleteItem(TodoEntity(id = id))
