@@ -78,7 +78,7 @@ class SharedViewmodel @Inject constructor(
         }
     }
 
-    fun onAddItem(text: String) {
+    private fun onAddItem(text: String) {
         viewModelScope.launch {
             if (isValidItem(text).not()) {
                 _actionData.value = UiAction.FailureAddition
@@ -97,7 +97,7 @@ class SharedViewmodel @Inject constructor(
         }
     }
 
-    fun onDeleteItem(itemId: Long) {
+    private fun onDeleteItem(itemId: Long) {
         viewModelScope.launch {
             repository.delete(itemId)
         }
