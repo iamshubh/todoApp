@@ -7,9 +7,8 @@ import androidx.room.RoomDatabase
 abstract class TodoDatabase : RoomDatabase() {
 
     companion object {
-        const val databaseName = "todo_items"
+        const val DATABASE_NAME = "todo_items"
     }
-
 
     abstract fun todoDao(): TodoEntityDao
 }

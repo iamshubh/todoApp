@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.sps.todoitems.data.TodoRepositoryImpl
 import com.sps.todoitems.data.db.TodoDatabase
-import com.sps.todoitems.data.db.TodoEntityDao
 import com.sps.todoitems.domain.TodoRepository
 import dagger.Module
 import dagger.Provides
@@ -22,7 +21,7 @@ object DataModule {
     fun provideDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
         context,
         TodoDatabase::class.java,
-        TodoDatabase.databaseName,
+        TodoDatabase.DATABASE_NAME,
     ).build()
 
     @Provides
