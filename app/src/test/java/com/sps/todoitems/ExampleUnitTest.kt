@@ -14,4 +14,11 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    fun myRepeat(count: Int, action: (iteration: Int) -> Unit) {
+       for (i in 1..count) {
+           action.invoke(i)
+       }
+    }
+
 }

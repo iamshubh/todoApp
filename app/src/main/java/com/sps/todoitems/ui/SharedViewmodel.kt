@@ -40,6 +40,7 @@ class SharedViewmodel @Inject constructor(
                 println("items updated $it")
                 savedTodoItems = it
                 _insertedItems.value = savedTodoItems
+                _filteredItems.value = savedTodoItems
             }
         }
 
